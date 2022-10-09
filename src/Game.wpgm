@@ -1,0 +1,59 @@
+import wollok.game.*
+import board.*
+import pieza.*
+
+program Game {
+
+	game.title("Tetris")
+	game.width(10)
+	game.height(20)
+	game.cellSize(25)
+	game.boardGround("black_background.png")	
+	
+	var tablero = new BoardMap()	    	
+	
+	var piezaS = new PieceS()
+	var piezaZ = new PieceZ()
+	var piezaI = new PieceI()
+	var piezaO = new PieceO()
+	var piezaL = new PieceL() 
+	var piezaT = new PieceT()
+	var piezaJ = new PieceJ()
+	
+	const piezas = []
+	piezas.add(piezaS)
+	piezas.add(piezaZ)
+	piezas.add(piezaI)
+	piezas.add(piezaO)
+	piezas.add(piezaL)
+	piezas.add(piezaT)
+	piezas.add(piezaJ)
+	
+	var piezaActiva = piezas.get(0.randomUpTo(6))	
+	piezaActiva.fillTileMap()
+	//move and check collisions
+	//keyboard.up().onPressDo({piezaActiva.MoveUp() if(tablero.CollideWith(piezaActiva)){piezaActiva.MoveDown()}})	
+	keyboard.down().onPressDo({piezaActiva.MoveDown() if(tablero.CollideWith(piezaActiva)){piezaActiva.MoveUp()}})	
+	keyboard.left().onPressDo({piezaActiva.MoveLeft() if(tablero.CollideWith(piezaActiva)){piezaActiva.MoveRight()}})	
+	keyboard.right().onPressDo({piezaActiva.MoveRight() if(tablero.CollideWith(piezaActiva)){piezaActiva.MoveLeft()}})
+	keyboard.d().onPressDo({piezaActiva.RotateCW() if(tablero.CollideWith(piezaActiva)){piezaActiva.RotateCCW()}})
+	//keyboard.a().onPressDo({piezaActiva.RotateCCW() })
+	//test random	
+	//keyboard.s().onPressDo({piezaActiva = piezas.get(0.randomUpTo(6)) piezaActiva.fillTileMap()})
+	//keyboard.z().onPressDo({tablero.StampPiece(piezaActiva) piezaActiva.clearTileMap() piezaActiva.fillTileMap()})
+	
+	 // cada medio segundo cambio imagen
+    game.onTick(500, "movimiento", { 
+    	piezaActiva.MoveDown() 
+		if(tablero.CollideWith(piezaActiva)){
+			piezaActiva.MoveUp()
+			tablero.StampPiece(piezaActiva) 
+			piezaActiva.clearTileMap() 
+			piezaActiva = piezas.get(0.randomUpTo(6))
+			piezaActiva.fillTileMap()
+		}
+    })
+	
+	game.start()
+
+}
