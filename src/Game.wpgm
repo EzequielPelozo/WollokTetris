@@ -1,55 +1,25 @@
 import wollok.game.*
 import board.*
 import pieza.*
+import manager.*
 
 program Game {
 
+	//El Tetris es un juego muy popular desarrollado originalmente por Alexey Pajitnov en junio de
+	//1985, mientras trabajaba en Moscú en el Centro de Computación Dorodnicyn de la Academia de
+	//Ciencia de la Unión Soviética. 
+	
+	//Alexey Pajitnov, nacido en 1956 en Rusia, es un ingeniero en computación que, con la ayuda de
+	//Dmitry Pavlovsky y Vadim Gerasimov, creó el Tetris en 1985. Además, desarrolló la secuela (no
+	//tan conocida) llamada Welltris, que tiene el mismo principio, pero en tres dimensiones. 
+		
+	gameManager.fillAtributes()
+	gameManager.keyBoardControl()	
+	gameManager.update()
 	game.title("Tetris")
-	game.width(10)
+	game.width(20)
 	game.height(20)
 	game.cellSize(25)
-	game.boardGround("black_background.png")	
-		
-	var tablero = new BoardMap()
-		tablero.fillMapHight() //   	
-	
-	var piezaS = new PieceS()
-	var piezaZ = new PieceZ()
-	var piezaI = new PieceI()
-	var piezaO = new PieceO()
-	var piezaL = new PieceL() 
-	var piezaT = new PieceT()
-	var piezaJ = new PieceJ()
-	
-	const piezas = []
-	piezas.add(piezaS)
-	piezas.add(piezaZ)
-	piezas.add(piezaI)
-	piezas.add(piezaO)
-	piezas.add(piezaL)
-	piezas.add(piezaT)
-	piezas.add(piezaJ)
-	
-	var piezaActiva = piezas.get(0.randomUpTo(6))	
-	piezaActiva.fillTileMap()
-	// Move and check collisions	
-	keyboard.down().onPressDo({piezaActiva.MoveDown() if(tablero.CollideWith(piezaActiva)){piezaActiva.MoveUp()}})	
-	keyboard.left().onPressDo({piezaActiva.MoveLeft() if(tablero.CollideWith(piezaActiva)){piezaActiva.MoveRight()}})	
-	keyboard.right().onPressDo({piezaActiva.MoveRight() if(tablero.CollideWith(piezaActiva)){piezaActiva.MoveLeft()}})
-	keyboard.d().onPressDo({piezaActiva.RotateCW() if(tablero.CollideWith(piezaActiva)){piezaActiva.RotateCCW()}})
-	 // Cada medio segundo realizo el bucle del juego
-    game.onTick(500, "movimiento", { 
-    	piezaActiva.MoveDown() 
-		if(tablero.CollideWith(piezaActiva)){
-			piezaActiva.MoveUp()
-			tablero.StampPiece(piezaActiva) 
-			tablero.CheckForLines()
-			piezaActiva.clearTileMap() 
-			piezaActiva = piezas.get(0.randomUpTo(6))
-			piezaActiva.fillTileMap()
-		}
-    })
-	
+	game.boardGround("tetris_background.png")	
 	game.start()
-
 }

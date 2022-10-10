@@ -3,12 +3,12 @@ import wollok.game.*
 
 class BoardMap {
 	
-	const property tilesMap = []
-	const property cols = 10
-	const property rows = 20
-	const property mapHight = []
+	const property tilesMap = []	//Mapa de tiles del tablero
+	const property cols = 10   		//Ancho del tablero
+	const property rows = 20		//Alto del tablero
+	const property mapHight = []	//Mapa de enteros para recorrer en forma vertica descendente
 	
-	// Lleno el hight pára recorrer de forma descendente
+	// Lleno el hight pára recorrer de forma descendente y chequear lineas formadas
 	method fillMapHight() {
 		(rows..0).forEach({n=>mapHight.add(n)})
 	} 
@@ -66,5 +66,7 @@ class BoardMap {
 			tile.position(new Position(x = tile.position().x(), y = tile.position().y() - 1))
 		}})
 	}
+	// Chequeo condicion de derrota
+	method gameOver() = tilesMap.any({tile => tile.position().y() >= rows - 2 })
 }
 

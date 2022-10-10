@@ -7,13 +7,13 @@ object naranja { method image() { return "tile_naranja.png" } }
 object azul { method image() { return "tile_azul.png" } }
 object amarillo { method image() { return "tile_amarillo.png" } }
 object celeste { method image() { return "tile_celeste.png" } }
-object gris { method image() { return "tile_gris_fondo.png" } }
+object blanco { method image() { return "tile_gris_base.png" } }
 
 class Piece {	
-	const property tilesMap = []
-	var property relativeX = 6
-	var property relativeY = 16
-	var property pieceMatrixLength = 3
+	const property tilesMap = []			//mapa de tiles de la pieza
+	var property relativeX = 4				//origen de la pieza en el mapa X
+	var property relativeY = 18				//origen de la pieza en el mapa Y
+	var property pieceMatrixLength = 3		//tamaño de lado de la matriz de la pieza
 	// Metodo a sobreescribir en cada pieza
 	method fillTileMap(){}	
 	// Metodo para rotar en sentido horario	
@@ -70,7 +70,8 @@ class Piece {
 	}
 	// Chequeo si existe fila para colision con bordes
 	method existAnyRowMaxAs(row) = tilesMap.any({
-		tile => tile.position().y() > row - 1 || tile.position().y() < 0
+		tile => tile.position().y() < 0
+		//tile => tile.position().y() > row - 1 || tile.position().y() < 0
 	})
 	// Chequeo si existe columna para colision con bordes
 	method existAnyColMaxAs(col) = tilesMap.any({
@@ -80,16 +81,16 @@ class Piece {
 	method existAnyTileAs(mapTile) = tilesMap.any({
 		tile => tile.position().y() == mapTile.position().y() && tile.position().x() == mapTile.position().x() 
 	})
-	// Devuelvo la lista de tiles grises para estampar en tablero
+	// Devuelvo la lista de tiles para estampar en tablero
 	method stampTileMap() = tilesMap.map({
-		tile => new PieceTile(color=celeste, position=new Position(x=tile.position().x(), y=tile.position().y()))		 
+		tile => new PieceTile(color=blanco, position=new Position(x=tile.position().x(), y=tile.position().y()))		 
 	})
 	// Borrar tilemap
 	method clearTileMap() {
 		tilesMap.forEach({tile => game.removeVisual(tile)})
 		tilesMap.clear()
-		relativeX = 6
-	    relativeY = 16
+		relativeX = 4
+	    relativeY = 18
 	}
 }
 
