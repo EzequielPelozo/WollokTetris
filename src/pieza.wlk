@@ -7,16 +7,16 @@ object naranja { method image() { return "tile_naranja.png" } }
 object azul { method image() { return "tile_azul.png" } }
 object amarillo { method image() { return "tile_amarillo.png" } }
 object celeste { method image() { return "tile_celeste.png" } }
-object gris { method image() { return "tile_gris.png" } }
+object gris { method image() { return "tile_gris_fondo.png" } }
 
 class Piece {	
 	const property tilesMap = []
 	var property relativeX = 6
 	var property relativeY = 16
 	var property pieceMatrixLength = 3
-	//metodo a sobreescribir en cada pieza
+	// Metodo a sobreescribir en cada pieza
 	method fillTileMap(){}	
-	//metodo para rotar en sentido horario	
+	// Metodo para rotar en sentido horario	
 	method RotateCW() {
 		tilesMap.forEach({//Para rotar la pieza primero translado al origen			
 			t => t.position(new Position(x = t.position().y() - relativeY + relativeX, 
@@ -24,7 +24,7 @@ class Piece {
 			))
 		})
 	}	
-	//metodo para rotar en sentido anti horario(se utiliza al chequear colision)
+	// Metodo para rotar en sentido anti horario(se utiliza al chequear colision)
 	method RotateCCW() {
 		tilesMap.forEach({//Para rotar la pieza primero translado al origen			
 			t => t.position(new Position(x = pieceMatrixLength - 1 - (t.position().y() - relativeY) + relativeX, 
@@ -32,7 +32,7 @@ class Piece {
 			))
 		})
 	}
-	//mover izquierda
+	// Mover izquierda
 	method MoveLeft() {
 		relativeX--
 		tilesMap.forEach({		
@@ -41,7 +41,7 @@ class Piece {
 			))
 		})
 	}
-	//mover derecha
+	// Mover derecha
 	method MoveRight() {
 		relativeX++
 		tilesMap.forEach({		
@@ -50,7 +50,7 @@ class Piece {
 			))
 		})
 	}
-	//mover arriba (se utiliza al chequear colision)
+	// Mover arriba (se utiliza al chequear colision)
 	method MoveUp() {
 		relativeY++
 		tilesMap.forEach({		
@@ -59,7 +59,7 @@ class Piece {
 			))
 		})
 	}
-	//mover abajo 
+	// Mover abajo 
 	method MoveDown() {
 		relativeY--
 		tilesMap.forEach({		
@@ -68,24 +68,25 @@ class Piece {
 			))
 		})
 	}
-	//chequeo si existe fila para colision con bordes
+	// Chequeo si existe fila para colision con bordes
 	method existAnyRowMaxAs(row) = tilesMap.any({
 		tile => tile.position().y() > row - 1 || tile.position().y() < 0
 	})
-	//chequeo si existe columna para colision con bordes
+	// Chequeo si existe columna para colision con bordes
 	method existAnyColMaxAs(col) = tilesMap.any({
 		tile => tile.position().x() > col - 1 || tile.position().x() < 0
 	})
-	//chequeo si colisiona con un tile del tablero
+	// Chequeo si colisiona con un tile del tablero
 	method existAnyTileAs(mapTile) = tilesMap.any({
 		tile => tile.position().y() == mapTile.position().y() && tile.position().x() == mapTile.position().x() 
 	})
-	//devuelvo la lista de tiles grises para estampar en tablero
+	// Devuelvo la lista de tiles grises para estampar en tablero
 	method stampTileMap() = tilesMap.map({
-		tile => new PieceTile(color=gris, position=new Position(x=tile.position().x(), y=tile.position().y()))		 
+		tile => new PieceTile(color=celeste, position=new Position(x=tile.position().x(), y=tile.position().y()))		 
 	})
-	//borrar tilemap
+	// Borrar tilemap
 	method clearTileMap() {
+		tilesMap.forEach({tile => game.removeVisual(tile)})
 		tilesMap.clear()
 		relativeX = 6
 	    relativeY = 16
@@ -219,7 +220,7 @@ class PieceJ inherits Piece {
 		tilesMap.add(tile4)	
 	}
 }
-//tile generico
+// Tile generico
 class PieceTile {
 	var property color
 	var property position
