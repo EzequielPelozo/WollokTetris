@@ -14,8 +14,8 @@ class Piece {
 	var property relativeX = 4				//origen de la pieza en el mapa X
 	var property relativeY = 18				//origen de la pieza en el mapa Y
 	var property pieceMatrixLength = 3		//tamaño de lado de la matriz de la pieza
-	// Metodo a sobreescribir en cada pieza
-	method fillTileMap(){}	
+	// Metodo abstracto a sobreescribir en cada pieza
+	method fillTileMap()	
 	// Metodo para rotar en sentido horario	
 	method RotateCW() {
 		tilesMap.forEach({//Para rotar la pieza primero translado al origen			
