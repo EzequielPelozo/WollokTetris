@@ -12,7 +12,7 @@ object blanco { method image() { return "tile_gris_base.png" } }
 class Piece {	
 	const property tilesMap = []			//mapa de tiles de la pieza
 	var property relativeX = 4				//origen de la pieza en el mapa X
-	var property relativeY = 18				//origen de la pieza en el mapa Y
+	var property relativeY = 20				//origen de la pieza en el mapa Y
 	var property pieceMatrixLength = 3		//tamaño de lado de la matriz de la pieza
 	// Metodo abstracto a sobreescribir en cada pieza
 	method fillTileMap()	

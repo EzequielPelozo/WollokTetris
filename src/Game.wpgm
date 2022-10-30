@@ -4,7 +4,6 @@ import pieza.*
 import manager.*
 
 program Game {
-
 	//El Tetris es un juego muy popular desarrollado originalmente por Alexey Pajitnov en junio de
 	//1985, mientras trabajaba en Moscú en el Centro de Computación Dorodnicyn de la Academia de
 	//Ciencia de la Unión Soviética. 
@@ -12,14 +11,6 @@ program Game {
 	//Alexey Pajitnov, nacido en 1956 en Rusia, es un ingeniero en computación que, con la ayuda de
 	//Dmitry Pavlovsky y Vadim Gerasimov, creó el Tetris en 1985. Además, desarrolló la secuela (no
 	//tan conocida) llamada Welltris, que tiene el mismo principio, pero en tres dimensiones. 
-		
-	gameManager.fillAtributes()
-	gameManager.keyBoardControl()	
-	gameManager.update()
-	game.title("Tetris")
-	game.width(20)
-	game.height(20)
-	game.cellSize(25)
-	game.boardGround("tetris_background.png")	
-	game.start()
+	gameManager.playGame()		
+	
 }
