@@ -69,7 +69,7 @@ class BoardMap {
 	// Chequeo condicion de derrota
 	method gameOver() = tilesMap.any({tile => tile.position().y() >= rows - 2 })
 }
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 object pressStartcover {
 	var property position = game.origin()
 	var property image = "test_background.png"

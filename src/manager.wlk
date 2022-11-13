@@ -13,6 +13,7 @@ object gameManager {
 	// Atributos de Board y Piece
 	var property tablero = new BoardMap()     // Tablero del juego
 	var property piezaActiva				  // Pieza activa del juego
+	var property nextPiece					  // Siguiente Pieza
 	const property piezas = []				  // Lista de piezas que voy a usar
 	// Llenar piezas y tablero
 	method fillAtributes() {
@@ -24,40 +25,56 @@ object gameManager {
 		piezas.add(new PieceL())			  // Agrego pieza L
 		piezas.add(new PieceT())		   	  // Agrego pieza T
 		piezas.add(new PieceJ())              // Agrego pieza J
-		self.setActivePiece()                 // Seteo la pieza activa de forma random
+		piezaActiva = self.setActivePiece()   // Seteo la pieza activa de forma random		
 		piezaActiva.fillTileMap()			  // Lleno el tilemap de la pieza activa
-		game.addVisual(messager)
+		piezaActiva.isInUse(true)			  // registro la pieza activa en uso
+		nextPiece = self.setActivePiece()     // Seteo la proxima pieza de forma random
+		nextPiece. setOriginPos(12,7)		  // seteo origen de la proxima pieza
+		nextPiece.fillTileMap()			      // Lleno el tilemap de la proxima pieza 
+		nextPiece.isInUse(true)				  // registro la siguiente pieza como en uso		
 		insertCoin.animation()				  // Animacion de insert coin
-		game.addVisual(insertCoin)			  // Agrego insert coin al juego
-		
-		game.addVisual(lineUnit)
-		lineUnit.checkChangeLine()	
-		game.addVisual(lineDozens)
-		lineDozens.checkChangeLine()
+		game.addVisual(insertCoin)			  // Agrego insert coin al juego 
+		game.addVisual(pressStartcover)		  // Press 1		
+		game.addVisual(lineUnit)			  // Control de unidad de lieas			
+		lineUnit.checkChangeLine()			  // Activo el control
+		game.addVisual(lineDozens)			  // Control de decena de linea
+		lineDozens.checkChangeLine()		  // Activo el control
+		game.addVisual(lineHundred)			  // Control de centena de linea
+		lineHundred.checkChangeLine()		  // Activo el control
 	}
+	// Filtro piezas no usadas
+	method unusedPieceFilter() = piezas.filter({piece => !piece.isInUse()})
 	// Seteo la pieza activa de forma aleatoria
-	method setActivePiece() {
-		piezaActiva = piezas.get(0.randomUpTo(6))
-	}
+	method setActivePiece() = self.unusedPieceFilter().get(0.randomUpTo(self.unusedPieceFilter().size() - 1))	
 	// Nueva pieza
 	method setNewPiece(){
-		piezaActiva.clearTileMap() 			// Limpio la pieza activa
-		self.setActivePiece()				//asigno una nurva pieza random
-		piezaActiva.fillTileMap()			//lleno la nueva pieza actica con valores
+		piezaActiva.clearTileMap() 						// Limpio la pieza activa 4 18		
+		nextPiece.clearTileMap()
+		nextPiece. setOriginPos(4,20)
+		nextPiece.fillTileMap()			                // Lleno el tilemap de la proxima pieza 
+		nextPiece.isInUse(true)		
+		piezaActiva = nextPiece		
+		nextPiece = self.setActivePiece()				//asigno una nurva pieza random	
+		nextPiece. setOriginPos(12,7)	
+		nextPiece.fillTileMap()				     		//lleno la nueva pieza actica con valores
+		nextPiece.isInUse(true)
+		
 	}
 	// Manejo de Inputs
 	method keyBoardControl(){
 		// Move and check collisions	
-		keyboard.down().onPressDo({piezaActiva.MoveDown() if(tablero.CollideWith(piezaActiva)){piezaActiva.MoveUp()}})	
-		keyboard.left().onPressDo({piezaActiva.MoveLeft() if(tablero.CollideWith(piezaActiva)){piezaActiva.MoveRight()}})	
-		keyboard.right().onPressDo({piezaActiva.MoveRight() if(tablero.CollideWith(piezaActiva)){piezaActiva.MoveLeft()}})
+		keyboard.down().onPressDo({if(!gameOver) {piezaActiva.MoveDown() if(tablero.CollideWith(piezaActiva)){piezaActiva.MoveUp()}}})	
+		keyboard.left().onPressDo({if(!gameOver) {piezaActiva.MoveLeft() if(tablero.CollideWith(piezaActiva)){piezaActiva.MoveRight()}}})	
+		keyboard.right().onPressDo({if(!gameOver) {piezaActiva.MoveRight() if(tablero.CollideWith(piezaActiva)){piezaActiva.MoveLeft()}}})
 		keyboard.up().onPressDo({piezaActiva.RotateCW() if(tablero.CollideWith(piezaActiva)){piezaActiva.RotateCCW()}})
+		keyboard.e().onPressDo({game.stop()})
 		keyboard.num1().onPressDo({
 			if(gameOver){
 				self.playSound() 
 				gameOver = false 
-				game.removeVisual(pressStartcover)
-				game.removeVisual(insertCoin)
+				if(game.hasVisual(pressStartcover)){game.removeVisual(pressStartcover)}
+				if(game.hasVisual(insertCoin)){game.removeVisual(insertCoin)}
+				self.update()								// Bucle principal del juego
 			}
 		}) 
 	}
@@ -73,8 +90,6 @@ object gameManager {
 				lines += tablero.CheckForLines()	// Controlo las lineas que se formaron
 				self.levelUp()						// Control para subir de nivel	PROBAR EN OTRO ONTICK			
 				self.setNewPiece()					// Seteo nueva pieza
-				game.say(messager, "lines: " + lines.toString())
-				//game.say(messager, "level: " + level.toString())
 			}
 			self.checkGameOver() 					//chequeo condicion de game over			
 		}						
@@ -86,11 +101,9 @@ object gameManager {
 		game.width(20)								// Seteo el ancho del tablero
 		game.height(20)								// Seteo el alto del tablero
 		game.cellSize(25)						    // Seteo el tamaño de cada unidad del juego en pixels
-		game.boardGround("tetris_background.png")   // Seteo el fondo
-		game.addVisual(pressStartcover)			
+		game.boardGround("tetris_background.png")   // Seteo el fondo					
 		self.fillAtributes()						// Lleno lo atributos del juego
-		self.keyBoardControl()						// Manejo de teclado
-		self.update()								// Bucle principal del juego
+		self.keyBoardControl()						// Manejo de teclado		
 		game.start()								// Inicio de juego
 	}
 	
@@ -103,18 +116,24 @@ object gameManager {
 	// Condicion de derrota
 	method checkGameOver() {
 		if(tablero.gameOver()){ console.println("llegue al borde")
-			game.stop()
+			game.removeTickEvent("game update")
+			gameOver = true
+			tablero.Reset()
+			sound.stop()
+			lines = 0
+			//game.addVisual(insertCoin)			  // Agrego insert coin al juego 
+			game.addVisual(pressStartcover)
 		}
 	} 	
 	// Subir nivel
 	method levelUp() {  }			
 }
-
+//////////////////////////////////OBJECTS///////////////////////////////////////////////////////////////////////////
 object linesCounter {
 	var property value = 0
 }
 // Mensajero para hacer pruebas
-object messager inherits PieceTile (color=blanco, position=new Position(x=12, y=6)) {}
+//object messager inherits PieceTile (color=blanco, position=new Position(x=12, y=6)) {}
 
 object insertCoin {
 	var property position = new Position(x = 0, y = 15)
@@ -141,8 +160,7 @@ object lineUnit {
 	method changeImage(){
 		index =  gameManager.lines() % 10 	// Controlo que sea de 0 a 9
 		image = "num_" + index + ".png"		// Seteo nueva imagen
-	}
-	
+	}	
 	method checkChangeLine(){game.onTick(40,"check de linea",{self.changeImage()})}
 }
 
@@ -156,9 +174,24 @@ object lineDozens {
 			index =  (gameManager.lines() * 0.1).truncate(0)  % 10 		// Controlo que sea de 0 a 9
 			image = "num_" + index + ".png" 							// Seteo nueva imagen
 		}		
-	}
-	
+	}	
 	method checkChangeLine(){game.onTick(40,"check de linea",{self.changeImage()})}
+}
+object lineHundred {
+
+	var property index = 0
+	var property position = new Position(x = 16, y = 4)
+	var property image = "num_" + index + ".png"
+
+	method changeImage() { // Solo entran multiplos de 100
+		if (gameManager.lines() > 99) {
+			index = (gameManager.lines() * 0.01).truncate(0) % 10 // Controlo que sea de 0 a 9
+			image = "num_" + index + ".png" // Seteo nueva imagen
+		}
+	}
+	method checkChangeLine() {
+		game.onTick(40, "check de linea", { self.changeImage()})
+	}
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //object simple {	method punctuation() = return 100 }

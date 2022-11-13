@@ -14,8 +14,23 @@ class Piece {
 	var property relativeX = 4				//origen de la pieza en el mapa X
 	var property relativeY = 20				//origen de la pieza en el mapa Y
 	var property pieceMatrixLength = 3		//tamaño de lado de la matriz de la pieza
+	var property isInUse = false
 	// Metodo abstracto a sobreescribir en cada pieza
-	method fillTileMap()	
+	method fillTileMap()
+	// Seteo origen de la pieza
+	method setOriginPos(x,y) {
+		relativeX = x
+		relativeY = y
+	}
+	// Borrar tilemap
+	method clearTileMap() {
+		tilesMap.forEach({tile => game.removeVisual(tile)})
+		tilesMap.clear()
+		isInUse = false
+		//self.setOriginPos(4,20)
+		//relativeX = 4
+	    //relativeY = 18
+	}	
 	// Metodo para rotar en sentido horario	
 	method RotateCW() {
 		tilesMap.forEach({//Para rotar la pieza primero translado al origen			
@@ -84,14 +99,7 @@ class Piece {
 	// Devuelvo la lista de tiles para estampar en tablero
 	method stampTileMap() = tilesMap.map({
 		tile => new PieceTile(color=blanco, position=new Position(x=tile.position().x(), y=tile.position().y()))		 
-	})
-	// Borrar tilemap
-	method clearTileMap() {
-		tilesMap.forEach({tile => game.removeVisual(tile)})
-		tilesMap.clear()
-		relativeX = 4
-	    relativeY = 18
-	}
+	})	
 }
 
 class PieceS inherits Piece {
