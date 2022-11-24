@@ -1,4 +1,10 @@
-# WollokTetris
+# WollokTetris 
+# Autor: Ezequiel Pelozo (Universidad de Hurlingham)
+## Capturas
+![Imagen de inicio](./assets/screenInicio.png)
+![Imagen del juego](./assets/screenJuego.png)
+## COMANDOS
+**Se empieza con el 1 y se utilizan las flechas para mover y rotar la pieza. Para salir se presiona E**
 # COMPONENTES Y ESTRUCTURA
 **El Tetris es un juego del tipo puzzle donde irá descendiendo una figura (pieza)
 dentro de un rectángulo (tablero o mapa). Una vez que ésta colisiona con el borde inferior del rectángulo o contra otra figura, se estampará allí y se lanzará una nueva pieza. Éstas deberán ser ubicadas de manera tal de llenar filas para que sean eliminadas, evitando que lleguen hasta el extremo superior.**
